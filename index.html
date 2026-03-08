@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoanDev | Game Music Composer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="glow"></div>
+
+    <nav>
+        <div class="logo">ROAN<span>DEV</span></div>
+        <ul>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact" class="btn-sm">Hire Me</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <div class="hero-content">
+            <h2 class="reveal">4 Years of Sonic Worlds</h2>
+            <h1 class="glitch" data-text="ROANDEV">ROANDEV</h1>
+            <p>High-fidelity soundtracks for Roblox, Unity, and Godot experiences.</p>
+            <div class="hero-btns">
+                <a href="#work" class="btn-primary">Listen to Tracks</a>
+                <a href="#contact" class="btn-secondary">Get a Quote</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="work">
+        <h2 class="section-title">Selected Discography</h2>
+        <div class="track-grid">
+            <div class="track-card" onclick="playTrack(0)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 1</h3>
+                <p>Dreaming - Ambient/Lo-Fi</p>
+            </div>
+            <div class="track-card" onclick="playTrack(1)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 2</h3>
+                <p>Dreamscape - Cinematic</p>
+            </div>
+            <div class="track-card" onclick="playTrack(2)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 3</h3>
+                <p>Bright - Upbeat Lo-Fi</p>
+            </div>
+            <div class="track-card" onclick="playTrack(3)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 4</h3>
+                <p>Mouse Trap - Playful/Quirky</p>
+            </div>
+             <div class="track-card" onclick="playTrack(4)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 5</h3>
+                <p>Electronic - Energetic</p>
+            </div>
+             <div class="track-card" onclick="playTrack(5)">
+                <div class="card-icon"><i class="fas fa-play"></i></div>
+                <h3>Music 6</h3>
+                <p>Synthwave - Retro</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about-container">
+            <div class="about-text">
+                <h2>The Composer</h2>
+                <p>With 4 years of experience, I specialize in creating adaptive audio that breathes life into games. Whether it's the blocks of <strong>Roblox</strong> or the complex physics of <strong>Unity and Godot</strong>, my soundscapes are built to scale.</p>
+                <div class="stats">
+                    <div class="stat-item"><strong>4+</strong> Years Exp.</div>
+                    <div class="stat-item"><strong>100%</strong> Originality</div>
+                    <div class="stat-item"><strong>$</strong> PayPal Only</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <h2>Ready for your next project?</h2>
+        <p>Currently accepting commissions via <strong>PayPal</strong> only.</p>
+        <a href="mailto:your-email@example.com" class="btn-primary">Contact via Email</a>
+        <div class="socials">
+            <i class="fab fa-discord"></i>
+            <i class="fab fa-twitter"></i>
+        </div>
+    </footer>
+
+    <div class="player-bar">
+        <div class="player-info">
+            <span id="current-track-name">Select a track...</span>
+        </div>
+        <div class="player-controls">
+            <button onclick="prevTrack()"><i class="fas fa-step-backward"></i></button>
+            <button id="play-pause" onclick="togglePlay()"><i class="fas fa-play"></i></button>
+            <button onclick="nextTrack()"><i class="fas fa-step-forward"></i></button>
+        </div>
+        <div class="progress-container" id="progress-container">
+            <div class="progress" id="progress"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
