@@ -1,114 +1,104 @@
-// --- CONFIGURATION ---
-const USERNAME = 'aasulaiman0613-boop'; // Your GitHub username
-const REPO = 'Roandev'; // Your repository name
-const BRANCH = 'main'; // Usually 'main' or 'master'
+// CONFIGURATION
+const GITHUB_USERNAME = 'aasulaiman0613-boop';
+const REPO_NAME = 'Roandev'; // <--- MUST MATCH GITHUB EXACTLY
 
-const trackGrid = document.querySelector('.track-grid');
+const grid = document.getElementById('music-grid');
 const audio = new Audio();
-const playBtn = document.getElementById('play-pause');
-const trackNameDisplay = document.getElementById('current-track-name');
+const playPauseBtn = document.getElementById('play-pause');
+const trackNameLabel = document.getElementById('current-track-name');
 const progressBar = document.getElementById('progress');
 
-let playlist = [];
-let currentTrackIndex = 0;
-let isPlaying = false;
+let tracks = [];
+let currentIndex = 0;
 
-// 1. FETCH MUSIC FROM GITHUB REPOSITORY
-async function loadRepositoryMusic() {
-    const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/`;
-    
+// FETCH FROM GITHUB
+async function fetchMusic() {
     try {
-        const response = await fetch(url);
-        const files = await response.json();
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/`);
+        const data = await response.json();
 
-        // Filter for audio files only
-        const audioFiles = files.filter(file => 
-            file.name.endsWith('.mp3') || 
-            file.name.endsWith('.wav') || 
-            file.name.endsWith('.ogg')
-        );
+        // Filter for audio files
+        const audioFiles = data.filter(file => file.name.match(/\.(mp3|wav|ogg|mpeg)$/i));
 
-        // Map them into our playlist format
-        playlist = audioFiles.map((file, index) => ({
-            name: `Music ${index + 1}`,
-            fileName: file.name,
-            url: `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${file.name}`
-        }));
+        if (audioFiles.length === 0) {
+            grid.innerHTML = '<p>No music files found in the root directory.</p>';
+            return;
+        }
 
-        renderTrackCards();
+        tracks = audioFiles;
+        grid.innerHTML = ''; // Clear loader
+
+        tracks.forEach((file, index) => {
+            const card = document.createElement('div');
+            card.className = 'track-card reveal';
+            card.innerHTML = `
+                <div class="play-icon"><i class="fas fa-play"></i></div>
+                <h3>Music ${index + 1}</h3>
+                <p>${file.name.split('.')[0].replace(/_/g, ' ')}</p>
+            `;
+            card.onclick = () => loadAndPlay(index);
+            grid.appendChild(card);
+        });
+
+        // Initialize animations for new cards
+        initScrollReveal();
+
     } catch (error) {
-        console.error("Error fetching repository files:", error);
-        trackGrid.innerHTML = "<p>Error loading tracks. Please check repository settings.</p>";
+        console.error(error);
+        grid.innerHTML = `<p style="color:red">Error: Ensure Repo name is correct and Public.</p>`;
     }
 }
 
-// 2. RENDER THE UI CARDS
-function renderTrackCards() {
-    trackGrid.innerHTML = ''; // Clear placeholder
-    
-    playlist.forEach((track, index) => {
-        const card = document.createElement('div');
-        card.className = 'track-card';
-        card.innerHTML = `
-            <div class="card-icon"><i class="fas fa-play"></i></div>
-            <h3>${track.name}</h3>
-            <p>${track.fileName}</p>
-        `;
-        card.onclick = () => playTrack(index);
-        trackGrid.appendChild(card);
-    });
-}
-
-// 3. AUDIO ENGINE LOGIC
-function playTrack(index) {
-    if (currentTrackIndex === index && audio.src !== "") {
-        togglePlay();
-        return;
-    }
-
-    currentTrackIndex = index;
-    audio.src = playlist[index].url;
-    trackNameDisplay.innerText = `Playing: ${playlist[index].name}`;
-    
-    // Visual feedback on cards
-    document.querySelectorAll('.track-card').forEach((c, i) => {
-        c.style.borderColor = (i === index) ? 'var(--accent)' : 'rgba(255,255,255,0.1)';
-    });
-
+function loadAndPlay(index) {
+    currentIndex = index;
+    const file = tracks[index];
+    audio.src = file.download_url;
     audio.play();
-    isPlaying = true;
-    updatePlayIcon();
+    
+    trackNameLabel.innerText = `Playing: Music ${index + 1}`;
+    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    
+    // Highlight active card
+    document.querySelectorAll('.track-card').forEach((c, i) => {
+        c.style.borderColor = (i === index) ? 'var(--accent)' : 'rgba(255,255,255,0.05)';
+    });
 }
 
 function togglePlay() {
     if (!audio.src) return;
-    if (isPlaying) audio.pause(); else audio.play();
-    isPlaying = !isPlaying;
-    updatePlayIcon();
-}
-
-function updatePlayIcon() {
-    playBtn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    if (audio.paused) {
+        audio.play();
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    } else {
+        audio.pause();
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    }
 }
 
 function nextTrack() {
-    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-    playTrack(currentTrackIndex);
+    currentIndex = (currentIndex + 1) % tracks.length;
+    loadAndPlay(currentIndex);
 }
 
 function prevTrack() {
-    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    playTrack(currentTrackIndex);
+    currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+    loadAndPlay(currentIndex);
 }
 
-// Progress Bar Update
+// Progress Bar
 audio.addEventListener('timeupdate', () => {
-    const percent = (audio.currentTime / audio.duration) * 100;
-    progressBar.style.width = `${percent}%`;
+    const progress = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = `${progress}%`;
 });
 
-// Auto-play next track
 audio.addEventListener('ended', nextTrack);
 
-// Initialize
-loadRepositoryMusic();
+// Scroll Animations
+function initScrollReveal() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+fetchMusic();
