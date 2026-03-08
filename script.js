@@ -1,32 +1,88 @@
-const tracks = [
-    { name: "Music 1", url: "http://googleusercontent.com/file_content/0" },
-    { name: "Music 2", url: "http://googleusercontent.com/file_content/1" },
-    { name: "Music 3", url: "http://googleusercontent.com/file_content/2" },
-    { name: "Music 4", url: "http://googleusercontent.com/file_content/3" },
-    { name: "Music 5", url: "http://googleusercontent.com/file_content/4" },
-    { name: "Music 6", url: "http://googleusercontent.com/file_content/5" }
-];
+// --- CONFIGURATION ---
+const USERNAME = 'roandev'; // Your GitHub username
+const REPO = 'your-repo-name'; // Your repository name
+const BRANCH = 'main'; // Usually 'main' or 'master'
 
-let currentTrackIndex = 0;
-let isPlaying = false;
+const trackGrid = document.querySelector('.track-grid');
 const audio = new Audio();
-
 const playBtn = document.getElementById('play-pause');
 const trackNameDisplay = document.getElementById('current-track-name');
-const progress = document.getElementById('progress');
+const progressBar = document.getElementById('progress');
 
+let playlist = [];
+let currentTrackIndex = 0;
+let isPlaying = false;
+
+// 1. FETCH MUSIC FROM GITHUB REPOSITORY
+async function loadRepositoryMusic() {
+    const url = `https://api.github.com/repos/${USERNAME}/${REPO}/contents/`;
+    
+    try {
+        const response = await fetch(url);
+        const files = await response.json();
+
+        // Filter for audio files only
+        const audioFiles = files.filter(file => 
+            file.name.endsWith('.mp3') || 
+            file.name.endsWith('.wav') || 
+            file.name.endsWith('.ogg')
+        );
+
+        // Map them into our playlist format
+        playlist = audioFiles.map((file, index) => ({
+            name: `Music ${index + 1}`,
+            fileName: file.name,
+            url: `https://raw.githubusercontent.com/${USERNAME}/${REPO}/${BRANCH}/${file.name}`
+        }));
+
+        renderTrackCards();
+    } catch (error) {
+        console.error("Error fetching repository files:", error);
+        trackGrid.innerHTML = "<p>Error loading tracks. Please check repository settings.</p>";
+    }
+}
+
+// 2. RENDER THE UI CARDS
+function renderTrackCards() {
+    trackGrid.innerHTML = ''; // Clear placeholder
+    
+    playlist.forEach((track, index) => {
+        const card = document.createElement('div');
+        card.className = 'track-card';
+        card.innerHTML = `
+            <div class="card-icon"><i class="fas fa-play"></i></div>
+            <h3>${track.name}</h3>
+            <p>${track.fileName}</p>
+        `;
+        card.onclick = () => playTrack(index);
+        trackGrid.appendChild(card);
+    });
+}
+
+// 3. AUDIO ENGINE LOGIC
 function playTrack(index) {
+    if (currentTrackIndex === index && audio.src !== "") {
+        togglePlay();
+        return;
+    }
+
     currentTrackIndex = index;
-    audio.src = tracks[index].url;
-    trackNameDisplay.innerText = "Playing: " + tracks[index].name;
+    audio.src = playlist[index].url;
+    trackNameDisplay.innerText = `Playing: ${playlist[index].name}`;
+    
+    // Visual feedback on cards
+    document.querySelectorAll('.track-card').forEach((c, i) => {
+        c.style.borderColor = (i === index) ? 'var(--accent)' : 'rgba(255,255,255,0.1)';
+    });
+
     audio.play();
     isPlaying = true;
     updatePlayIcon();
 }
 
 function togglePlay() {
-    if (audio.src === "") { playTrack(0); return; }
-    if (isPlaying) { audio.pause(); } else { audio.play(); }
+    if (!audio.src) return;
+    if (isPlaying) audio.pause(); else audio.play();
     isPlaying = !isPlaying;
     updatePlayIcon();
 }
@@ -36,17 +92,23 @@ function updatePlayIcon() {
 }
 
 function nextTrack() {
-    currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
     playTrack(currentTrackIndex);
 }
 
 function prevTrack() {
-    currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
     playTrack(currentTrackIndex);
 }
 
-// Update progress bar
+// Progress Bar Update
 audio.addEventListener('timeupdate', () => {
     const percent = (audio.currentTime / audio.duration) * 100;
-    progress.style.width = `${percent}%`;
+    progressBar.style.width = `${percent}%`;
 });
+
+// Auto-play next track
+audio.addEventListener('ended', nextTrack);
+
+// Initialize
+loadRepositoryMusic();
