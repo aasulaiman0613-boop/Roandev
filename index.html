@@ -20,18 +20,19 @@
         <ul class="nav-links">
             <li><a href="#work">Work</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#contact" class="btn-sm">Hire Me</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="https://discord.com/users/roandev" target="_blank" class="btn-sm-nav">Discord</a></li>
         </ul>
     </nav>
 
     <header>
         <div class="hero-content">
-            <h2 class="reveal">Composer & Sound Designer</h2>
+            <h2 class="reveal">4 Years of Sonic Architecture</h2>
             <h1 class="glitch" data-text="ROANDEV">ROANDEV</h1>
-            <p class="fade-in">Crafting immersive soundtracks for <strong>Roblox, Unity, and Godot</strong>. 4 years of experience delivering high-impact audio.</p>
+            <p class="fade-in">Bespoke soundtracks for <strong>Roblox, Unity, & Godot</strong>. Making games sound the way they feel.</p>
             <div class="hero-btns fade-in">
-                <a href="#work" class="btn-primary">Listen to Tracks</a>
-                <a href="#contact" class="btn-secondary">PayPal Commissions</a>
+                <a href="#work" class="btn-primary">Explore Sounds</a>
+                <a href="https://discord.com/users/roandev" target="_blank" class="btn-secondary"><i class="fab fa-discord"></i> DM on Discord</a>
             </div>
         </div>
     </header>
@@ -39,51 +40,91 @@
     <section id="work">
         <div class="container">
             <h2 class="section-title reveal">Selected Discography</h2>
-            <div class="track-grid">
-                <div class="loader">Scanning Repository...</div>
+            <div class="track-grid" id="music-grid">
+                <div class="loader">Loading tracks from GitHub...</div>
             </div>
         </div>
     </section>
 
     <section id="about">
-        <div class="about-card reveal">
-            <div class="about-text">
-                <h2>The Experience</h2>
-                <p>I build sonic identities. From orchestral themes to lo-fi exploration tracks, my music is designed to enhance gameplay loops and player retention.</p>
-                <div class="stats">
-                    <div class="stat-item"><span>4+</span><br>Years</div>
-                    <div class="stat-item"><span>Real</span><br>Currency</div>
-                    <div class="stat-item"><span>Fast</span><br>Delivery</div>
+        <div class="container">
+            <div class="about-wrapper">
+                <div class="about-box reveal">
+                    <h2>Beyond the Notes</h2>
+                    <p>I am <strong>Roandev</strong>, a specialized game composer with over 4 years of experience navigating the unique audio requirements of interactive media. Unlike traditional musicians, I understand <strong>adaptive audio</strong>—how music needs to shift, loop, and breathe based on player action.</p>
+                    <p>Whether you need a high-octane boss theme for a Roblox fighter or an atmospheric ambient pad for a Godot horror title, I deliver production-ready files optimized for your engine of choice.</p>
+                    
+                    <div class="skill-tags">
+                        <span>Roblox (Luau)</span>
+                        <span>Unity (C#)</span>
+                        <span>Godot</span>
+                        <span>FL Studio / Logic</span>
+                        <span>Adaptive Loops</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="container">
+            <h2 class="section-title reveal">Rates & Commissions</h2>
+            <p class="section-sub reveal">Payments via <strong>PayPal</strong> only. No Robux or Crypto.</p>
+            <div class="price-grid">
+                <div class="price-card reveal">
+                    <h3>The Loop</h3>
+                    <div class="price-tag">$20<span>/ea</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Seamless 30-60s Loop</li>
+                        <li><i class="fas fa-check"></i> 1 Free Revision</li>
+                    </ul>
+                    <a href="https://discord.com/users/roandev" target="_blank" class="btn-price">Order via Discord</a>
+                </div>
+                <div class="price-card featured reveal">
+                    <div class="badge">Recommended</div>
+                    <h3>Full Track</h3>
+                    <div class="price-tag">$55<span>/ea</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 1-3 Minute Composition</li>
+                        <li><i class="fas fa-check"></i> Commercial Rights</li>
+                        <li><i class="fas fa-check"></i> 3 Free Revisions</li>
+                    </ul>
+                    <a href="https://discord.com/users/roandev" target="_blank" class="btn-price">Order via Discord</a>
+                </div>
+                <div class="price-card reveal">
+                    <h3>The OST</h3>
+                    <div class="price-tag">$200<span>+</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 5+ Cohesive Tracks</li>
+                        <li><i class="fas fa-check"></i> Priority Support</li>
+                    </ul>
+                    <a href="https://discord.com/users/roandev" target="_blank" class="btn-price">Order via Discord</a>
                 </div>
             </div>
         </div>
     </section>
 
     <footer id="contact">
-        <h2 class="reveal">Start a Project</h2>
-        <p>I only accept real money via <strong>PayPal</strong>.</p>
-        <a href="Discord:roandev" class="btn-primary">Send Inquiry</a>
+        <h2 class="reveal">Get In Touch</h2>
+        <p>Username: <strong>roandev</strong></p>
         <div class="socials">
-            <a href="#"><i class="fab fa-discord"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="https://discord.com/users/roandev" target="_blank"><i class="fab fa-discord"></i></a>
+            <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i></a>
         </div>
     </footer>
 
     <div class="player-bar">
         <div class="player-inner">
             <div class="player-info">
-                <span id="current-track-name">Select a track</span>
+                <span id="current-track-name">Paused</span>
             </div>
-            
             <div class="player-controls">
                 <button onclick="prevTrack()" class="ctrl-btn"><i class="fas fa-backward-step"></i></button>
                 <button id="play-pause" onclick="togglePlay()" class="ctrl-btn play-main"><i class="fas fa-play"></i></button>
                 <button onclick="nextTrack()" class="ctrl-btn"><i class="fas fa-forward-step"></i></button>
             </div>
-
             <div class="progress-wrapper">
-                <div class="progress-container" id="progress-container">
+                <div class="progress-container" id="p-cont">
                     <div class="progress" id="progress"></div>
                 </div>
             </div>
