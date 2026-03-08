@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
-const USERNAME = 'roandev'; // Your GitHub username
-const REPO = 'your-repo-name'; // Your repository name
+const USERNAME = 'aasulaiman0613-boop'; // Your GitHub username
+const REPO = 'Roandev'; // Your repository name
 const BRANCH = 'main'; // Usually 'main' or 'master'
 
 const trackGrid = document.querySelector('.track-grid');
