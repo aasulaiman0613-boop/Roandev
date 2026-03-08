@@ -1,6 +1,6 @@
 // CONFIGURATION
 const GITHUB_USERNAME = 'aasulaiman0613-boop';
-const REPO_NAME = 'Roandev'; // <--- MUST MATCH GITHUB EXACTLY
+const REPO_NAME = 'Roandev'; 
 
 const grid = document.getElementById('music-grid');
 const audio = new Audio();
@@ -13,25 +13,21 @@ let currentIndex = 0;
 
 // 1. FETCH MUSIC FROM GITHUB
 async function fetchMusic() {
-    // API URL to get contents of the root folder
     const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/`;
     
     try {
         const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-            throw new Error(`GitHub API Error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
 
         const data = await response.json();
 
-        // Filter for audio files (mp3, wav, ogg, mpeg)
+        // Filter for audio files
         const audioFiles = data.filter(file => 
             file.name.match(/\.(mp3|wav|ogg|mpeg)$/i)
         );
 
         if (audioFiles.length === 0) {
-            grid.innerHTML = '<p>No audio files found in the root of the repo.</p>';
+            grid.innerHTML = '<p>No audio files found in the root directory.</p>';
             return;
         }
 
@@ -40,18 +36,13 @@ async function fetchMusic() {
 
     } catch (error) {
         console.error("Fetch Error:", error);
-        grid.innerHTML = `
-            <div style="text-align:center; color:#ff4444; padding:20px;">
-                <p><strong>Error connecting to GitHub.</strong></p>
-                <p style="font-size:0.8rem">Check if REPO_NAME "${REPO_NAME}" is correct and the repo is Public.</p>
-            </div>
-        `;
+        grid.innerHTML = `<p style="color:#ff4444">Connection Error. Check REPO_NAME in script.js</p>`;
     }
 }
 
-// 2. RENDER THE MUSIC CARDS
+// 2. RENDER THE MUSIC CARDS (Cleaned up as requested)
 function renderCards() {
-    grid.innerHTML = ''; // Clear the "Loading" text
+    grid.innerHTML = ''; 
     
     tracks.forEach((file, index) => {
         const card = document.createElement('div');
@@ -59,17 +50,12 @@ function renderCards() {
         card.innerHTML = `
             <div class="play-icon"><i class="fas fa-play"></i></div>
             <h3>Music ${index + 1}</h3>
-            <p>${file.name.replace(/_/g, ' ').split('.')[0]}</p>
-        `;
+        `; // Removed the <p> tag that showed file names
         card.onclick = () => loadAndPlay(index);
         grid.appendChild(card);
     });
 
-    // Trigger animations for the new cards
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    initScrollReveal();
 }
 
 // 3. PLAYER ENGINE
@@ -77,14 +63,13 @@ function loadAndPlay(index) {
     currentIndex = index;
     const file = tracks[index];
     
-    // We use download_url which is the direct link provided by GitHub API
     audio.src = file.download_url;
     audio.play();
     
     trackNameLabel.innerText = `Playing: Music ${index + 1}`;
     playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
     
-    // Highlight active card UI
+    // UI Active States
     document.querySelectorAll('.track-card').forEach((c, i) => {
         c.style.borderColor = (i === index) ? 'var(--accent)' : 'rgba(255,255,255,0.05)';
         c.style.background = (i === index) ? 'rgba(168, 85, 247, 0.1)' : 'var(--card)';
@@ -112,7 +97,7 @@ function prevTrack() {
     loadAndPlay(currentIndex);
 }
 
-// UI Updates
+// 4. UTILITIES
 audio.addEventListener('timeupdate', () => {
     const progressPercent = (audio.currentTime / audio.duration) * 100;
     progressBar.style.width = `${progressPercent}%`;
@@ -120,5 +105,22 @@ audio.addEventListener('timeupdate', () => {
 
 audio.addEventListener('ended', nextTrack);
 
-// Start the process
+function initScrollReveal() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// Discord Copy Function
+function copyDiscord() {
+    const el = document.createElement('textarea');
+    el.value = 'roandev';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    alert('Discord username "roandev" copied to clipboard!');
+}
+
 fetchMusic();
